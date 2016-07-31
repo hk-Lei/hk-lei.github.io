@@ -1,0 +1,786 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Storm,Flux," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="苦行僧" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/hk-Lei.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="一个用于简化 Apache Storm 流式计算任务创建和部署的框架
+定义flux |fləks| noun
+
+流入流出的动作或过程
+持续变化
+在物理学中，流体、辐射、微粒可以穿过一定的区域
+与固体物质混合，用来降低熔点
+
+基本原理当配置是写死的时候总是会出现很多问题。不应该有人为了更改配置而重新编译或打包应用程序。
+简介Flux 是一个用于简化创建和部署 Apache Storm Topolog">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Storm Flux">
+<meta property="og:url" content="http://hk-lei.github.io/2016/07/15/storm-flux/index.html">
+<meta property="og:site_name" content="苦行僧">
+<meta property="og:description" content="一个用于简化 Apache Storm 流式计算任务创建和部署的框架
+定义flux |fləks| noun
+
+流入流出的动作或过程
+持续变化
+在物理学中，流体、辐射、微粒可以穿过一定的区域
+与固体物质混合，用来降低熔点
+
+基本原理当配置是写死的时候总是会出现很多问题。不应该有人为了更改配置而重新编译或打包应用程序。
+简介Flux 是一个用于简化创建和部署 Apache Storm Topolog">
+<meta property="og:updated_time" content="2016-07-31T17:29:46.085Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Storm Flux">
+<meta name="twitter:description" content="一个用于简化 Apache Storm 流式计算任务创建和部署的框架
+定义flux |fləks| noun
+
+流入流出的动作或过程
+持续变化
+在物理学中，流体、辐射、微粒可以穿过一定的区域
+与固体物质混合，用来降低熔点
+
+基本原理当配置是写死的时候总是会出现很多问题。不应该有人为了更改配置而重新编译或打包应用程序。
+简介Flux 是一个用于简化创建和部署 Apache Storm Topolog">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://hk-lei.github.io/2016/07/15/storm-flux/"/>
+
+  <title> Storm Flux | 苦行僧 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">苦行僧</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Storm Flux
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-15T22:30:50+08:00" content="2016-07-15">
+              2016-07-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Storm/" itemprop="url" rel="index">
+                    <span itemprop="name">Storm</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Storm/译文/" itemprop="url" rel="index">
+                    <span itemprop="name">译文</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>一个用于简化 Apache Storm 流式计算任务创建和部署的框架</p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p><strong>flux</strong> |fləks| <em>noun</em></p>
+<ol>
+<li>流入流出的动作或过程</li>
+<li>持续变化</li>
+<li>在物理学中，流体、辐射、微粒可以穿过一定的区域</li>
+<li>与固体物质混合，用来降低熔点</li>
+</ol>
+<h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><p>当配置是写死的时候总是会出现很多问题。不应该有人为了更改配置而重新编译或打包应用程序。</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Flux 是一个用于简化创建和部署 Apache Storm Topologies 的框架和工具集。</p>
+<a id="more"></a>
+<p>你是不是发现你以前经常重复写如下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">    <span class="comment">// 决定我们是不是在本地运行的逻辑...</span></div><div class="line">    <span class="comment">// 创建必要的配置项...</span></div><div class="line">    <span class="keyword">boolean</span> runLocal = shouldRunLocal();</div><div class="line">    <span class="keyword">if</span>(runLocal)&#123;</div><div class="line">        LocalCluster cluster = <span class="keyword">new</span> LocalCluster();</div><div class="line">        cluster.submitTopology(name, conf, topology);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        StormSubmitter.submitTopology(name, conf, topology);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>从来不会像这样简单：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">storm jar mytopology.jar org.apache.storm.flux.Flux --local config.yaml</div></pre></td></tr></table></figure>
+<p>or:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">storm jar mytopology.jar org.apache.storm.flux.Flux --remote config.yaml</div></pre></td></tr></table></figure>
+<p>另一个经常被提及的痛点：通常在 Java 代码中绑定 Topology 图，任何更改都需要重新编译和打包 Topology 的 jar 文件。Flux 旨在减轻这个痛点：通过将所有的 Storm 组件打包成一个 jar， 用一个额外的文本文件来定义 topologies 的布局和配置。</p>
+<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><ul>
+<li>不用在 Topology 的代码嵌入配置项，易于配置和部署 Storm topologies (包括 Storm 核心和微批 API)</li>
+<li>支持已有的 topology 代码 （见下文）</li>
+<li>使用一个灵活的 YAML DSL 定义 Storm 核心 API (Spouts/Bolts)</li>
+<li>YAML DSL 支持大多数 Storm 组件 (storm-kafka, storm-hdfs, storm-hbase, 等等)</li>
+<li>方便支持多语言的组件</li>
+<li>外部属性替换/过滤，对于配置/环境环境之间轻松切换(类似于 Maven 的 <code>${variable.name}</code> 替换方式)</li>
+</ul>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>使用 Flux，需将其作为依赖打包到包含所有 Storm 组件的 fat jar 中，然后创建一个 YAML 文件来定义 topology 结构（参见下面的 YAML 配置项）。</p>
+<h3 id="从源码构建"><a href="#从源码构建" class="headerlink" title="从源码构建"></a>从源码构建</h3><p>使用 Flux 最简单的方式是，如下所述将其作为一个 Maven 依赖添加到项目中。</p>
+<p>如果你想从源代码构建 Flux 及运行单元/集成测试，则需要在系统中安装以下软件：</p>
+<ul>
+<li>Python 2.6.x or 或更高版本</li>
+<li>Node.js 0.10.x or 或更高版本</li>
+</ul>
+<h4 id="构建中运行单元测试"><a href="#构建中运行单元测试" class="headerlink" title="构建中运行单元测试"></a>构建中运行单元测试</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mvn clean install</div></pre></td></tr></table></figure>
+<h4 id="构建中不运行单元测试"><a href="#构建中不运行单元测试" class="headerlink" title="构建中不运行单元测试"></a>构建中不运行单元测试</h4><p>如果想在构建 Flux 时不用安装 Python 或者 Node.js，你可以简单的跳过单元测试：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mvn clean install -DskipTests=true</div></pre></td></tr></table></figure>
+<p>注意：如果你计划使用 Flux 将 topologies 部署在远程集群上，那么仍然需要安装 Python，因为是 Apache Storm 必须的。</p>
+<h4 id="构建中运行集成测试"><a href="#构建中运行集成测试" class="headerlink" title="构建中运行集成测试"></a>构建中运行集成测试</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mvn clean install -DskipIntegration=false</div></pre></td></tr></table></figure>
+<h3 id="Maven-打包"><a href="#Maven-打包" class="headerlink" title="Maven 打包"></a>Maven 打包</h3><p>为了在 Storm 组件中启用 Flux，需要将其添加为一个依赖，使得其包含在 Storm topology jar 中。可以使用 Maven shade 插件（首选）或者 Maven assembly 插件（不推荐）来完成。</p>
+<h4 id="Flux-Maven-Dependency"><a href="#Flux-Maven-Dependency" class="headerlink" title="Flux Maven Dependency"></a>Flux Maven Dependency</h4><p>目前版本(译注：1.0.0)的 Flux 已经在 Maven 仓库中可用，坐标如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.storm<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>flux-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;storm.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div></pre></td></tr></table></figure>
+<h4 id="创建一个启用-Flux-的-Topology-JAR"><a href="#创建一个启用-Flux-的-Topology-JAR" class="headerlink" title="创建一个启用 Flux 的 Topology JAR"></a>创建一个启用 Flux 的 Topology JAR</h4><p>下面的例子演示了通过 Maven shade 插件使用 Flux：</p>
+ <figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- 在 shaded jar 中引入 Flux 和用户依赖 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></div><div class="line">    <span class="comment">&lt;!-- 引入 Flux --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.storm<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>flux-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;storm.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- 在这里添加用户依赖... --&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- 创建一个包含所有依赖的 jar --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-shade-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">createDependencyReducedPom</span>&gt;</span>true<span class="tag">&lt;/<span class="name">createDependencyReducedPom</span>&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">executions</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">execution</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">goals</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">goal</span>&gt;</span>shade<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">transformers</span>&gt;</span></div><div class="line">                            <span class="tag">&lt;<span class="name">transformer</span></span></div><div class="line">                                    <span class="attr">implementation</span>=<span class="string">"org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"</span>/&gt;</div><div class="line">                            <span class="tag">&lt;<span class="name">transformer</span></span></div><div class="line">                                    <span class="attr">implementation</span>=<span class="string">"org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"</span>&gt;</div><div class="line">                                <span class="tag">&lt;<span class="name">mainClass</span>&gt;</span>org.apache.storm.flux.Flux<span class="tag">&lt;/<span class="name">mainClass</span>&gt;</span></div><div class="line">                            <span class="tag">&lt;/<span class="name">transformer</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;/<span class="name">transformers</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></div><div class="line">                <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="部署运行-Flux-Topology"><a href="#部署运行-Flux-Topology" class="headerlink" title="部署运行 Flux Topology"></a>部署运行 Flux Topology</h3><p>一旦 topology 组件和 Flux 依赖打包到一起，就可以通过 <code>storm jar</code> 命令在本地或者远程运行不同的 topologies。例如：假设 jar 包叫 <code>myTopology-0.1.0-SNAPSHOT.jar</code>，可以使用下述命令在本地运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">storm jar myTopology-0.1.0-SNAPSHOT.jar org.apache.storm.flux.Flux --local my_config.yaml</div></pre></td></tr></table></figure>
+<h3 id="命令行选项"><a href="#命令行选项" class="headerlink" title="命令行选项"></a>命令行选项</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">usage: storm jar &lt;my_topology_uber_jar.jar&gt; org.apache.storm.flux.Flux</div><div class="line">             [options] &lt;topology-config.yaml&gt;</div><div class="line"> -d,--dry-run                 Do not run or deploy the topology. Just</div><div class="line">                              build, validate, and print information about</div><div class="line">                              the topology.</div><div class="line"> -e,--env-filter              Perform environment variable substitution.</div><div class="line">                              Replace keys identified with `$&#123;ENV-[NAME]&#125;`</div><div class="line">                              will be replaced with the corresponding</div><div class="line">                              `NAME` environment value</div><div class="line"> -f,--filter &lt;file&gt;           Perform property substitution. Use the</div><div class="line">                              specified file as a source of properties,</div><div class="line">                              and replace keys identified with &#123;$[property</div><div class="line">                              name]&#125; with the value defined in the</div><div class="line">                              properties file.</div><div class="line"> -i,--inactive                Deploy the topology, but do not activate it.</div><div class="line"> -l,--local                   Run the topology in local mode.</div><div class="line"> -n,--no-splash               Suppress the printing of the splash screen.</div><div class="line"> -q,--no-detail               Suppress the printing of topology details.</div><div class="line"> -r,--remote                  Deploy the topology to a remote cluster.</div><div class="line"> -R,--resource                Treat the supplied path as a classpath</div><div class="line">                              resource instead of a file.</div><div class="line"> -s,--sleep &lt;ms&gt;              When running locally, the amount of time to</div><div class="line">                              sleep (in ms.) before killing the topology</div><div class="line">                              and shutting down the local cluster.</div><div class="line"> -z,--zookeeper &lt;host:port&gt;   When running in local mode, use the</div><div class="line">                              ZooKeeper at the specified &lt;host&gt;:&lt;port&gt;</div><div class="line">                              instead of the in-process ZooKeeper.</div><div class="line">                              (requires Storm 0.9.3 or later)</div></pre></td></tr></table></figure>
+<p><strong>注意:</strong> Flux 努力避免与 <code>storm</code> 命令行的冲突，允许使用 <code>storm</code> 命令的其他任何命令选项。</p>
+<p>例如：你可以使用 <code>storm</code> 命令的 -c 选项去覆盖 topology 的配置项。下述示例命令将运行 Flux 并且覆盖 <code>nimbus.seeds</code> 配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">storm jar myTopology-0.1.0-SNAPSHOT.jar org.apache.storm.flux.Flux --remote my_config.yaml -c <span class="string">'nimbus.seeds=["localhost"]'</span></div></pre></td></tr></table></figure>
+<h3 id="简单的输出"><a href="#简单的输出" class="headerlink" title="简单的输出"></a>简单的输出</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">███████╗██╗     ██╗   ██╗██╗  ██╗</div><div class="line">██╔════╝██║     ██║   ██║╚██╗██╔╝</div><div class="line">█████╗  ██║     ██║   ██║ ╚███╔╝</div><div class="line">██╔══╝  ██║     ██║   ██║ ██╔██╗</div><div class="line">██║     ███████╗╚██████╔╝██╔╝ ██╗</div><div class="line">╚═╝     ╚══════╝ ╚═════╝ ╚═╝  ╚═╝</div><div class="line">+-         Apache Storm        -+</div><div class="line">+-  data FLow User eXperience  -+</div><div class="line">Version: 0.3.0</div><div class="line">Parsing file: /Users/hsimpson/Projects/donut_domination/storm/shell_test.yaml</div><div class="line">---------- TOPOLOGY DETAILS ----------</div><div class="line">Name: shell-topology</div><div class="line">--------------- SPOUTS ---------------</div><div class="line">sentence-spout[1](org.apache.storm.flux.spouts.GenericShellSpout)</div><div class="line">---------------- BOLTS ---------------</div><div class="line">splitsentence[1](org.apache.storm.flux.bolts.GenericShellBolt)</div><div class="line">log[1](org.apache.storm.flux.wrappers.bolts.LogInfoBolt)</div><div class="line">count[1](org.apache.storm.testing.TestWordCounter)</div><div class="line">--------------- STREAMS ---------------</div><div class="line">sentence-spout --SHUFFLE--&gt; splitsentence</div><div class="line">splitsentence --FIELDS--&gt; count</div><div class="line">count --SHUFFLE--&gt; log</div><div class="line">--------------------------------------</div><div class="line">Submitting topology: &apos;shell-topology&apos; to remote cluster...</div></pre></td></tr></table></figure>
+<h2 id="YAML-配置项"><a href="#YAML-配置项" class="headerlink" title="YAML 配置项"></a>YAML 配置项</h2><p>在 YAML 文件中定义（或描述） Flux topology，一个 Flux topology 由以下部件组成：</p>
+<ol>
+<li>一个 topology 名称</li>
+<li>topology 的 “组件(components)” 列表(将在环境中可用的 Java 对象)</li>
+<li><strong>EITHER</strong> (DSL topology 定义):<ul>
+<li>spouts 列表，每个需要一个唯一的 ID 标识</li>
+<li>bolts 列表，每个需要一个唯一的 ID 标识</li>
+<li>“stream” 列表，代表了在 spouts 和 bolts 间传输的 tuples 流</li>
+</ul>
+</li>
+<li><strong>OR</strong> (可用产生 <code>org.apache.storm.generated.StormTopology</code> 实例的 JVM 类):<ul>
+<li>一个 <code>topologySource</code> 定义.</li>
+</ul>
+</li>
+</ol>
+<p><strong>译注：</strong> 3、4 二选一。</p>
+<p>例如，这有一个使用 YAML DSL 简单定义的单词统计的 topology：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="attr">name:</span> <span class="string">"yaml-topology"</span></div><div class="line"><span class="attr">config:</span></div><div class="line">  topology.workers: <span class="number">1</span></div><div class="line"></div><div class="line"><span class="comment"># 定义 spouts</span></div><div class="line"><span class="attr">spouts:</span></div><div class="line"><span class="attr">  - id:</span> <span class="string">"spout-1"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.testing.TestWordSpout"</span></div><div class="line"><span class="attr">    parallelism:</span> <span class="number">1</span></div><div class="line"></div><div class="line"><span class="comment"># 定义 bolts</span></div><div class="line"><span class="attr">bolts:</span></div><div class="line"><span class="attr">  - id:</span> <span class="string">"bolt-1"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.testing.TestWordCounter"</span></div><div class="line"><span class="attr">    parallelism:</span> <span class="number">1</span></div><div class="line"><span class="attr">  - id:</span> <span class="string">"bolt-2"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.flux.wrappers.bolts.LogInfoBolt"</span></div><div class="line"><span class="attr">    parallelism:</span> <span class="number">1</span></div><div class="line"></div><div class="line"><span class="comment"># 定义数据流</span></div><div class="line"><span class="attr">streams:</span></div><div class="line"><span class="attr">  - name:</span> <span class="string">"spout-1 --&gt; bolt-1"</span> <span class="comment"># 名称目前没有被使用 (logging、UI 等的占位符)</span></div><div class="line"><span class="attr">    from:</span> <span class="string">"spout-1"</span></div><div class="line"><span class="attr">    to:</span> <span class="string">"bolt-1"</span></div><div class="line"><span class="attr">    grouping:</span></div><div class="line"><span class="attr">      type:</span> FIELDS</div><div class="line"><span class="attr">      args:</span> [<span class="string">"word"</span>]</div><div class="line"></div><div class="line"><span class="attr">  - name:</span> <span class="string">"bolt-1 --&gt; bolt2"</span></div><div class="line"><span class="attr">    from:</span> <span class="string">"bolt-1"</span></div><div class="line"><span class="attr">    to:</span> <span class="string">"bolt-2"</span></div><div class="line"><span class="attr">    grouping:</span></div><div class="line"><span class="attr">      type:</span> SHUFFLE</div></pre></td></tr></table></figure>
+<h2 id="替换-过滤属性"><a href="#替换-过滤属性" class="headerlink" title="替换/过滤属性"></a>替换/过滤属性</h2><p>通常开发者希望在不同配置之间切换自如，例如在开发环境和生产环境间的切换部署。这个可以使用不同的 YAML 配置文件来完成，但是这种方法导致了不必要的重复，尤其是在 Storm topology 没有改变的情况下，改变主机名、端口和并行度等配置。</p>
+<p>在这种情况下，Flux 提供了属性过滤允许将不同的值外部化到不同的 <code>.properties</code> 文件中，在解析 <code>.yaml</code> 文件前替换他们。</p>
+<p>使用 <code>--filter</code> 命令选项来启用属性过滤。例如，可以这样调用 Flux：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">storm jar myTopology-0.1.0-SNAPSHOT.jar org.apache.storm.flux.Flux --local my_config.yaml --filter dev.properties</div></pre></td></tr></table></figure>
+<p>使用如下的 <code>dev.properties</code> 文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">kafka.zookeeper.hosts: localhost:2181</div></pre></td></tr></table></figure>
+<p>可以在 <code>.yaml</code> 文件中使用 <code>${}</code> 语法通过 key 引用那些属性值：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="attr">- id:</span> <span class="string">"zkHosts"</span></div><div class="line"><span class="attr">  className:</span> <span class="string">"org.apache.storm.kafka.ZkHosts"</span></div><div class="line"><span class="attr">  constructorArgs:</span></div><div class="line"><span class="bullet">    -</span> <span class="string">"$&#123;kafka.zookeeper.hosts&#125;"</span></div></pre></td></tr></table></figure>
+<p>这样，在解析 YAML 内容之前 Flux 将使用 <code>localhost:2181</code> 替换 <code>${kafka.zookeeper.hosts}</code>。</p>
+<h3 id="替换-过滤环境变量"><a href="#替换-过滤环境变量" class="headerlink" title="替换/过滤环境变量"></a>替换/过滤环境变量</h3><p>Flux 也运行替换环境变量。例如，定义了一个环境变量名为 <code>ZK_HOSTS</code>，可以在 Flux YAML 中用如下的语法引用它：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$&#123;ENV-ZK_HOSTS&#125;</div></pre></td></tr></table></figure>
+<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><p>组件实质上是配置项中的 spouts 和 bolts 对象实例，如果熟悉 Spring 框架的话，组件可以类比 Spring beans。</p>
+<p>每个组件至少有一个唯一的标识符（字符串）和类名(字符串)标识。例如，以下将创建一个 <code>org.apache.storm.kafka.StringScheme</code> 类的实例作为键 <code>&quot;stringScheme&quot;</code> 的引用，假设 <code>org.apache.storm.kafka.StringScheme</code> 类有一个默认的构造方法。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="attr">components:</span></div><div class="line"><span class="attr">  - id:</span> <span class="string">"stringScheme"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.kafka.StringScheme"</span></div></pre></td></tr></table></figure>
+<h3 id="构造参数、引用、属性和配置方法"><a href="#构造参数、引用、属性和配置方法" class="headerlink" title="构造参数、引用、属性和配置方法"></a>构造参数、引用、属性和配置方法</h3><h4 id="构造参数"><a href="#构造参数" class="headerlink" title="构造参数"></a>构造参数</h4><p>可以通过在组件中添加一个 <code>contructorArgs</code> 元素来配置组件类构造方法的参数。 <code>contructorArgs</code> 是一个传递给类的构造函数的对象列表。下面示例中通过调用接收一个字符串的构造函数创建了一个对象。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="attr">- id:</span> <span class="string">"zkHosts"</span></div><div class="line"><span class="attr">  className:</span> <span class="string">"org.apache.storm.kafka.ZkHosts"</span></div><div class="line"><span class="attr">  constructorArgs:</span></div><div class="line"><span class="bullet">    -</span> <span class="string">"localhost:2181"</span></div></pre></td></tr></table></figure>
+<h4 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h4><p>每个组件示例是由一个唯一的 id 标识的，其允许被其他组件使用/重用。引用现有的组件，需要使用 <code>ref</code> 标签指定组件的 id。</p>
+<p>在下例中，创建了一个 id 为 <code>&quot;stringScheme&quot;</code> 的组件，然后作为另一个组件构造方法的参数被引用。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="attr">components:</span></div><div class="line"><span class="attr">  - id:</span> <span class="string">"stringScheme"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.kafka.StringScheme"</span></div><div class="line"></div><div class="line"><span class="attr">  - id:</span> <span class="string">"stringMultiScheme"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.spout.SchemeAsMultiScheme"</span></div><div class="line"><span class="attr">    constructorArgs:</span></div><div class="line"><span class="attr">      - ref:</span> <span class="string">"stringScheme"</span> <span class="comment"># id 为 "stringScheme" 的组件必须在上面已经声明了</span></div></pre></td></tr></table></figure>
+<p><strong>注意:</strong> 引用只能在被声明的对象下面使用。</p>
+<h4 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h4><p>除了支持调用不同参数的构造方法之外，Flux 还允许使用类似 JavaBean 的 setter 方法来配置组件，字段需声明为 <code>public</code>：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="attr">- id:</span> <span class="string">"spoutConfig"</span></div><div class="line"><span class="attr">  className:</span> <span class="string">"org.apache.storm.kafka.SpoutConfig"</span></div><div class="line"><span class="attr">  constructorArgs:</span></div><div class="line">    <span class="comment"># brokerHosts</span></div><div class="line"><span class="attr">    - ref:</span> <span class="string">"zkHosts"</span></div><div class="line">    <span class="comment"># topic</span></div><div class="line"><span class="bullet">    -</span> <span class="string">"myKafkaTopic"</span></div><div class="line">    <span class="comment"># zkRoot</span></div><div class="line"><span class="bullet">    -</span> <span class="string">"/kafkaSpout"</span></div><div class="line">    <span class="comment"># id</span></div><div class="line"><span class="bullet">    -</span> <span class="string">"myId"</span></div><div class="line"><span class="attr">  properties:</span></div><div class="line"><span class="attr">    - name:</span> <span class="string">"ignoreZkOffsets"</span></div><div class="line"><span class="attr">      value:</span> <span class="literal">true</span></div><div class="line"><span class="attr">    - name:</span> <span class="string">"scheme"</span></div><div class="line"><span class="attr">      ref:</span> <span class="string">"stringMultiScheme"</span></div></pre></td></tr></table></figure>
+<p>在上述示例中，<code>properties</code> 声明会致使 Flux 在 <code>SpoutConfig</code> 中去寻找一个 public 方法 <code>setForceFromStart(boolean b)</code> 并尝试调用它。如果 setter 方法没找到，Flux 会再去寻找一个名为 <code>ignoreZkOffsets</code> 的 public 实例变量并尝试设置其值。</p>
+<p>引用也可以作为属性的值。</p>
+<h4 id="配置方法"><a href="#配置方法" class="headerlink" title="配置方法"></a>配置方法</h4><p>从概念上讲，配置方法类似于属性和构造参数 – 他们允许你在一个对象被构造后调用一个任意的方法。配置方法对于处理类是很有用的，不用暴露 JavaBean 方法和构造器就可以完全配置一个对象。常见的例子包括类都使用建造者模式 (<code>builder pattern</code>) 配置/构成。</p>
+<p>下述的 YAML 示例创建了一个 bolt 并配置其调用一些方法：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="attr">bolts:</span></div><div class="line"><span class="attr">  - id:</span> <span class="string">"bolt-1"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.flux.test.TestBolt"</span></div><div class="line"><span class="attr">    parallelism:</span> <span class="number">1</span></div><div class="line"><span class="attr">    configMethods:</span></div><div class="line"><span class="attr">      - name:</span> <span class="string">"withFoo"</span></div><div class="line"><span class="attr">        args:</span></div><div class="line"><span class="bullet">          -</span> <span class="string">"foo"</span></div><div class="line"><span class="attr">      - name:</span> <span class="string">"withBar"</span></div><div class="line"><span class="attr">        args:</span></div><div class="line"><span class="bullet">          -</span> <span class="string">"bar"</span></div><div class="line"><span class="attr">      - name:</span> <span class="string">"withFooBar"</span></div><div class="line"><span class="attr">        args:</span></div><div class="line"><span class="bullet">          -</span> <span class="string">"foo"</span></div><div class="line"><span class="bullet">          -</span> <span class="string">"bar"</span></div></pre></td></tr></table></figure>
+<p>相应的方法声明如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">withFoo</span><span class="params">(String foo)</span></span>;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">withBar</span><span class="params">(String bar)</span></span>;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">withFooBar</span><span class="params">(String foo, String bar)</span></span>;</div></pre></td></tr></table></figure>
+<p>传递给配置方法的参数同构造函数参数工作方式相同，也支持引用。</p>
+<h3 id="在构造参数、引用、属性和配置方法中使用-Java-枚举-enum"><a href="#在构造参数、引用、属性和配置方法中使用-Java-枚举-enum" class="headerlink" title="在构造参数、引用、属性和配置方法中使用 Java 枚举 (enum)"></a>在构造参数、引用、属性和配置方法中使用 Java 枚举 (<code>enum</code>)</h3><p>在 Flux YAML 文件中可以很容易的使用 Java 枚举的值作为参数，只需引用 <code>enum</code> 即可。</p>
+<p>例如，<a href="">Storm 的 HDFS 模块</a> 包含以下枚举定义（简写）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">enum</span> Units &#123;</div><div class="line">    KB, MB, GB, TB</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>org.apache.storm.hdfs.bolt.rotation.FileSizeRotationPolicy</code> 类有如下的构造方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">FileSizeRotationPolicy</span><span class="params">(<span class="keyword">float</span> count, Units units)</span></span></div></pre></td></tr></table></figure>
+<p>下面的 Flux <code>component</code> 定义可以被用来调用构造函数:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="attr">- id:</span> <span class="string">"rotationPolicy"</span></div><div class="line"><span class="attr">  className:</span> <span class="string">"org.apache.storm.hdfs.bolt.rotation.FileSizeRotationPolicy"</span></div><div class="line"><span class="attr">  constructorArgs:</span></div><div class="line"><span class="bullet">    -</span> <span class="number">5.0</span></div><div class="line"><span class="bullet">    -</span> MB</div></pre></td></tr></table></figure>
+<p>上述定义的功能相当于如下的 Java 代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 当文件达到 5 MB 时切文件</span></div><div class="line">FileRotationPolicy rotationPolicy = <span class="keyword">new</span> FileSizeRotationPolicy(<span class="number">5.0f</span>, Units.MB);</div></pre></td></tr></table></figure>
+<h2 id="配置-Topology"><a href="#配置-Topology" class="headerlink" title="配置 Topology"></a>配置 Topology</h2><p><code>config</code> 部分是 Storm topology 配置参数中的一个简单的键值对，其将被作为 <code>org.apache.storm.Config</code> 类的示例传递给 <code>org.apache.storm.StormSubmitter</code>：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="attr">config:</span></div><div class="line">  topology.workers: <span class="number">4</span></div><div class="line">  topology.max.spout.pending: <span class="number">1000</span></div><div class="line">  topology.message.timeout.secs: <span class="number">30</span></div></pre></td></tr></table></figure>
+<h2 id="已存在的-Topologies"><a href="#已存在的-Topologies" class="headerlink" title="已存在的 Topologies"></a>已存在的 Topologies</h2><p>如果你有已存在的 Storm topologies，你也可以使用 Flux 来部署/运行/测试它们。这个特性允许你为现有的 topology 利用 Flux 构造函数参数、引用、属性和 Topology 配置声明。</p>
+<p>使用现有的 topology 类最简单的方法是定义一个如下的 <code>getTopology()</code> 的实例方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> StormTopology <span class="title">getTopology</span><span class="params">(Map&lt;String, Object&gt; config)</span></span></div></pre></td></tr></table></figure>
+<p>或:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> StormTopology <span class="title">getTopology</span><span class="params">(Config config)</span></span></div></pre></td></tr></table></figure>
+<p>可以使用如下的 YAML 来配置 topology：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="attr">name:</span> <span class="string">"existing-topology"</span></div><div class="line"><span class="attr">topologySource:</span></div><div class="line"><span class="attr">  className:</span> <span class="string">"org.apache.storm.flux.test.SimpleTopology"</span></div></pre></td></tr></table></figure>
+<p>如果你想使用的 topology 类中有不同的方法名(即不是 <code>getTopology</code>)，你可以重写它:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="attr">name:</span> <span class="string">"existing-topology"</span></div><div class="line"><span class="attr">topologySource:</span></div><div class="line"><span class="attr">  className:</span> <span class="string">"org.apache.storm.flux.test.SimpleTopology"</span></div><div class="line"><span class="attr">  methodName:</span> <span class="string">"getTopologyWithDifferentMethodName"</span></div></pre></td></tr></table></figure>
+<p><strong>注意：</strong> 这个指定的方法必须接受一个 <code>java.util.Map&lt;String, Object&gt;</code> 或<br><code>org.apache.storm.Config</code> 类型的参数，返回一个 <code>org.apache.storm.generated.StormTopology</code> 对象。</p>
+<h2 id="YAML-DSL"><a href="#YAML-DSL" class="headerlink" title="YAML DSL"></a>YAML DSL</h2><h3 id="Spouts-和-Bolts"><a href="#Spouts-和-Bolts" class="headerlink" title="Spouts 和 Bolts"></a>Spouts 和 Bolts</h3><p>YAML 配置中，Spout 和 Bolt 分别在他们自己的配置项中。<code>component</code> 的定义由 Spout 和 Bolt 的定义组成，通过添加 <code>parallelism</code> 参数来设置部署 topology 时组件的并行度。</p>
+<p>由于 spout 和 bolt 的定义继承自 <code>component</code>，所以他们也支持构造函数参数、引用和属性。</p>
+<p>Shell spout 示例：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="attr">spouts:</span></div><div class="line"><span class="attr">  - id:</span> <span class="string">"sentence-spout"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.flux.spouts.GenericShellSpout"</span></div><div class="line">    <span class="comment"># shell spout 的构造函数需要 2 个参数: String[], String[]</span></div><div class="line"><span class="attr">    constructorArgs:</span></div><div class="line">      <span class="comment"># 命令行</span></div><div class="line"><span class="bullet">      -</span> [<span class="string">"node"</span>, <span class="string">"randomsentence.js"</span>]</div><div class="line">      <span class="comment"># 输出 fields</span></div><div class="line"><span class="bullet">      -</span> [<span class="string">"word"</span>]</div><div class="line"><span class="attr">    parallelism:</span> <span class="number">1</span></div></pre></td></tr></table></figure>
+<p>Kafka spout 示例:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line"><span class="attr">components:</span></div><div class="line"><span class="attr">  - id:</span> <span class="string">"stringScheme"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.kafka.StringScheme"</span></div><div class="line"></div><div class="line"><span class="attr">  - id:</span> <span class="string">"stringMultiScheme"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.spout.SchemeAsMultiScheme"</span></div><div class="line"><span class="attr">    constructorArgs:</span></div><div class="line"><span class="attr">      - ref:</span> <span class="string">"stringScheme"</span></div><div class="line"></div><div class="line"><span class="attr">  - id:</span> <span class="string">"zkHosts"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.kafka.ZkHosts"</span></div><div class="line"><span class="attr">    constructorArgs:</span></div><div class="line"><span class="bullet">      -</span> <span class="string">"localhost:2181"</span></div><div class="line"></div><div class="line"><span class="comment"># 可选的 kafka 配置</span></div><div class="line"><span class="comment">#  - id: "kafkaConfig"</span></div><div class="line"><span class="comment">#    className: "org.apache.storm.kafka.KafkaConfig"</span></div><div class="line"><span class="comment">#    constructorArgs:</span></div><div class="line"><span class="comment">#      # brokerHosts</span></div><div class="line"><span class="comment">#      - ref: "zkHosts"</span></div><div class="line"><span class="comment">#      # topic</span></div><div class="line"><span class="comment">#      - "myKafkaTopic"</span></div><div class="line"><span class="comment">#      # clientId (可选)</span></div><div class="line"><span class="comment">#      - "myKafkaClientId"</span></div><div class="line"></div><div class="line"><span class="attr">  - id:</span> <span class="string">"spoutConfig"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.kafka.SpoutConfig"</span></div><div class="line"><span class="attr">    constructorArgs:</span></div><div class="line">      <span class="comment"># brokerHosts</span></div><div class="line"><span class="attr">      - ref:</span> <span class="string">"zkHosts"</span></div><div class="line">      <span class="comment"># topic</span></div><div class="line"><span class="bullet">      -</span> <span class="string">"myKafkaTopic"</span></div><div class="line">      <span class="comment"># zkRoot</span></div><div class="line"><span class="bullet">      -</span> <span class="string">"/kafkaSpout"</span></div><div class="line">      <span class="comment"># id</span></div><div class="line"><span class="bullet">      -</span> <span class="string">"myId"</span></div><div class="line"><span class="attr">    properties:</span></div><div class="line"><span class="attr">      - name:</span> <span class="string">"ignoreZkOffsets"</span></div><div class="line"><span class="attr">        value:</span> <span class="literal">true</span></div><div class="line"><span class="attr">      - name:</span> <span class="string">"scheme"</span></div><div class="line"><span class="attr">        ref:</span> <span class="string">"stringMultiScheme"</span></div><div class="line"></div><div class="line"><span class="attr">config:</span></div><div class="line">  topology.workers: <span class="number">1</span></div><div class="line"></div><div class="line"><span class="comment"># 定义 spout</span></div><div class="line"><span class="attr">spouts:</span></div><div class="line"><span class="attr">  - id:</span> <span class="string">"kafka-spout"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.kafka.KafkaSpout"</span></div><div class="line"><span class="attr">    constructorArgs:</span></div><div class="line"><span class="attr">      - ref:</span> <span class="string">"spoutConfig"</span></div></pre></td></tr></table></figure>
+<p>Bolt 示例:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 定义 bolt</span></div><div class="line"><span class="attr">bolts:</span></div><div class="line"><span class="attr">  - id:</span> <span class="string">"splitsentence"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.flux.bolts.GenericShellBolt"</span></div><div class="line"><span class="attr">    constructorArgs:</span></div><div class="line">      <span class="comment"># 命令行</span></div><div class="line"><span class="bullet">      -</span> [<span class="string">"python"</span>, <span class="string">"splitsentence.py"</span>]</div><div class="line">      <span class="comment"># 输出 fields</span></div><div class="line"><span class="bullet">      -</span> [<span class="string">"word"</span>]</div><div class="line"><span class="attr">    parallelism:</span> <span class="number">1</span></div><div class="line">    <span class="comment"># ...</span></div><div class="line"></div><div class="line"><span class="attr">  - id:</span> <span class="string">"log"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.flux.wrappers.bolts.LogInfoBolt"</span></div><div class="line"><span class="attr">    parallelism:</span> <span class="number">1</span></div><div class="line">    <span class="comment"># ...</span></div><div class="line"></div><div class="line"><span class="attr">  - id:</span> <span class="string">"count"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.testing.TestWordCounter"</span></div><div class="line"><span class="attr">    parallelism:</span> <span class="number">1</span></div><div class="line">    <span class="comment"># ...</span></div></pre></td></tr></table></figure>
+<h3 id="流和分组"><a href="#流和分组" class="headerlink" title="流和分组"></a>流和分组</h3><p>Flux 中的流可以被描绘成 Topology 中 Spouts 和 Bolts 间的一系列连接 (图的边、数据流等)，其有一个相应的分组定义。</p>
+<p>流定义包含下列属性：</p>
+<p><strong><code>name</code>:</strong> 连接的名称(可选，目前未使用)</p>
+<p><strong><code>from</code>:</strong> Spout 或 Bolt 源(发布者)的 <code>id</code></p>
+<p><strong><code>to</code>:</strong> Spout 或 Bolt 目的地(订阅者)的 <code>id</code></p>
+<p><strong><code>grouping</code>:</strong> 流分组定义</p>
+<p>分组定义包含下列属性：</p>
+<p><strong><code>type</code>:</strong> 分组类型： <code>ALL</code>、<code>CUSTOM</code>、<code>DIRECT</code>、<code>SHUFFLE</code>、<code>LOCAL_OR_SHUFFLE</code>、<code>FIELDS</code>、<code>GLOBAL</code> 或 <code>NONE</code>其中之一。</p>
+<p><strong><code>streamId</code>:</strong> Storm 流 ID (可选。如果没指明将使用默认的 default )</p>
+<p><strong><code>args</code>:</strong> 面向 <code>FIELDS</code> 分组的字段名列表。</p>
+<p><strong><code>customClass</code></strong> 面向 <code>CUSTOM</code> 分组的自定义分组类。</p>
+<p>下例中的 <code>streams</code> 定义使用如下的连接建立了一个 Topology：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">kafka-spout --&gt; splitsentence --&gt; count --&gt; log</div></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 流定义</span></div><div class="line"><span class="comment"># 流定义就是定义 spouts 和 bolts 之间的连接</span></div><div class="line"><span class="comment"># 注意这种连接可以是周期性的</span></div><div class="line"><span class="comment"># 自定义流分组也是支持的</span></div><div class="line"></div><div class="line"><span class="attr">streams:</span></div><div class="line"><span class="attr">  - name:</span> <span class="string">"kafka --&gt; split"</span> <span class="comment"># 名称目前没有被使用 (logging、UI 等的占位符)</span></div><div class="line"><span class="attr">    from:</span> <span class="string">"kafka-spout"</span></div><div class="line"><span class="attr">    to:</span> <span class="string">"splitsentence"</span></div><div class="line"><span class="attr">    grouping:</span></div><div class="line"><span class="attr">      type:</span> SHUFFLE</div><div class="line"></div><div class="line"><span class="attr">  - name:</span> <span class="string">"split --&gt; count"</span></div><div class="line"><span class="attr">    from:</span> <span class="string">"splitsentence"</span></div><div class="line"><span class="attr">    to:</span> <span class="string">"count"</span></div><div class="line"><span class="attr">    grouping:</span></div><div class="line"><span class="attr">      type:</span> FIELDS</div><div class="line"><span class="attr">      args:</span> [<span class="string">"word"</span>]</div><div class="line"></div><div class="line"><span class="attr">  - name:</span> <span class="string">"count --&gt; log"</span></div><div class="line"><span class="attr">    from:</span> <span class="string">"count"</span></div><div class="line"><span class="attr">    to:</span> <span class="string">"log"</span></div><div class="line"><span class="attr">    grouping:</span></div><div class="line"><span class="attr">      type:</span> SHUFFLE</div></pre></td></tr></table></figure>
+<h4 id="自定义流分组"><a href="#自定义流分组" class="headerlink" title="自定义流分组"></a>自定义流分组</h4><p>自定义流分组的定义通过设置分组类型为 <code>CUSTOM</code> 和定义一个 <code>customClass</code> 参数，告诉 Flux 如何自定义类实例化。<code>customClass</code> 定义继承自 <code>component</code>，所以它也支持构造函数参数、引用和属性。</p>
+<p>下例中使用了一个自定义流分组类 <code>org.apache.storm.testing.NGrouping</code> 创建了一个流：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="attr">- name:</span> <span class="string">"bolt-1 --&gt; bolt2"</span></div><div class="line"><span class="attr">  from:</span> <span class="string">"bolt-1"</span></div><div class="line"><span class="attr">  to:</span> <span class="string">"bolt-2"</span></div><div class="line"><span class="attr">  grouping:</span></div><div class="line"><span class="attr">    type:</span> CUSTOM</div><div class="line"><span class="attr">    customClass:</span></div><div class="line"><span class="attr">      className:</span> <span class="string">"org.apache.storm.testing.NGrouping"</span></div><div class="line"><span class="attr">      constructorArgs:</span></div><div class="line"><span class="bullet">        -</span> <span class="number">1</span></div></pre></td></tr></table></figure>
+<h3 id="Includes-和-Overrides"><a href="#Includes-和-Overrides" class="headerlink" title="Includes 和 Overrides"></a>Includes 和 Overrides</h3><p>Flux 允许包含其他的 YAML 文件，就像在同一个文件中定义一样。包含的可以是文件，也可以是 classpath 资源。</p>
+<p>Includes 指定为一个键值对列表:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="attr">includes:</span></div><div class="line"><span class="attr">  - resource:</span> <span class="literal">false</span></div><div class="line"><span class="attr">    file:</span> <span class="string">"src/test/resources/configs/shell_test.yaml"</span></div><div class="line"><span class="attr">    override:</span> <span class="literal">false</span></div></pre></td></tr></table></figure>
+<p>如果 <code>resource</code> 属性设置为 <code>true</code>，通过 <code>file</code> 属性的值将加载 classpath 资源，否则其将被视为一个正常的文件。</p>
+<p><code>override</code> 属性控制如何有效的包含在当前文件中定义的值。如果 <code>override</code> 设置为 <code>true</code>, 解析时 <code>file</code> 文件中包含的值将会替换当前文件中的值； <code>override</code> 设置为 <code>false</code>, 当前文件中的值的解析优先级高，解析器将拒绝替换他们。</p>
+<p><strong>注意:</strong> Includes 目前还不是递归的，包含文件中的 Includes 将会被忽略。</p>
+<h3 id="Word-Count-示例"><a href="#Word-Count-示例" class="headerlink" title="Word Count 示例"></a>Word Count 示例</h3><p>这个示例使用里一个 JavaScript 实现的 spout、一个 Python 实现的 bolt、和一个 Java 实现的 bolt。</p>
+<p>Topology YAML 配置:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line"><span class="meta">---</span></div><div class="line"><span class="attr">name:</span> <span class="string">"shell-topology"</span></div><div class="line"><span class="attr">config:</span></div><div class="line">  topology.workers: <span class="number">1</span></div><div class="line"></div><div class="line"><span class="comment"># 定义 spout</span></div><div class="line"><span class="attr">spouts:</span></div><div class="line"><span class="attr">  - id:</span> <span class="string">"sentence-spout"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.flux.spouts.GenericShellSpout"</span></div><div class="line">    <span class="comment"># shell spout 的构造函数需要 2 个参数: String[], String[]</span></div><div class="line"><span class="attr">    constructorArgs:</span></div><div class="line">      <span class="comment"># 命令行</span></div><div class="line"><span class="bullet">      -</span> [<span class="string">"node"</span>, <span class="string">"randomsentence.js"</span>]</div><div class="line">      <span class="comment"># 输出 fields</span></div><div class="line"><span class="bullet">      -</span> [<span class="string">"word"</span>]</div><div class="line"><span class="attr">    parallelism:</span> <span class="number">1</span></div><div class="line"></div><div class="line"><span class="comment"># 定义 bolt</span></div><div class="line"><span class="attr">bolts:</span></div><div class="line"><span class="attr">  - id:</span> <span class="string">"splitsentence"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.flux.bolts.GenericShellBolt"</span></div><div class="line"><span class="attr">    constructorArgs:</span></div><div class="line">      <span class="comment"># 命令行</span></div><div class="line"><span class="bullet">      -</span> [<span class="string">"python"</span>, <span class="string">"splitsentence.py"</span>]</div><div class="line">      <span class="comment"># 输出 fields</span></div><div class="line"><span class="bullet">      -</span> [<span class="string">"word"</span>]</div><div class="line"><span class="attr">    parallelism:</span> <span class="number">1</span></div><div class="line"></div><div class="line"><span class="attr">  - id:</span> <span class="string">"log"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.flux.wrappers.bolts.LogInfoBolt"</span></div><div class="line"><span class="attr">    parallelism:</span> <span class="number">1</span></div><div class="line"></div><div class="line"><span class="attr">  - id:</span> <span class="string">"count"</span></div><div class="line"><span class="attr">    className:</span> <span class="string">"org.apache.storm.testing.TestWordCounter"</span></div><div class="line"><span class="attr">    parallelism:</span> <span class="number">1</span></div><div class="line"></div><div class="line"><span class="comment"># 流定义</span></div><div class="line"><span class="comment"># 流定义就是定义 spouts 和 bolts 之间的连接</span></div><div class="line"><span class="comment"># 注意这种连接可以是周期性的</span></div><div class="line"><span class="comment"># 自定义流分组也是支持的</span></div><div class="line"></div><div class="line"><span class="attr">streams:</span></div><div class="line"><span class="attr">  - name:</span> <span class="string">"spout --&gt; split"</span> <span class="comment"># 名称目前没有被使用 (logging、UI 等的占位符)</span></div><div class="line"><span class="attr">    from:</span> <span class="string">"sentence-spout"</span></div><div class="line"><span class="attr">    to:</span> <span class="string">"splitsentence"</span></div><div class="line"><span class="attr">    grouping:</span></div><div class="line"><span class="attr">      type:</span> SHUFFLE</div><div class="line"></div><div class="line"><span class="attr">  - name:</span> <span class="string">"split --&gt; count"</span></div><div class="line"><span class="attr">    from:</span> <span class="string">"splitsentence"</span></div><div class="line"><span class="attr">    to:</span> <span class="string">"count"</span></div><div class="line"><span class="attr">    grouping:</span></div><div class="line"><span class="attr">      type:</span> FIELDS</div><div class="line"><span class="attr">      args:</span> [<span class="string">"word"</span>]</div><div class="line"></div><div class="line"><span class="attr">  - name:</span> <span class="string">"count --&gt; log"</span></div><div class="line"><span class="attr">    from:</span> <span class="string">"count"</span></div><div class="line"><span class="attr">    to:</span> <span class="string">"log"</span></div><div class="line"><span class="attr">    grouping:</span></div><div class="line"><span class="attr">      type:</span> SHUFFLE</div></pre></td></tr></table></figure>
+<h2 id="微批处理-Trident-API"><a href="#微批处理-Trident-API" class="headerlink" title="微批处理 (Trident) API"></a>微批处理 (Trident) API</h2><p>目前，Flux YAML DSL 只支持 Storm 核心 API，但对 Storm 微批处理的 API 支持在计划中。</p>
+<p>如果在 Trident topology 中使用 Flux ，可以定义一个 topology getter 方法，在 YAML 配置中引用它：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="attr">name:</span> <span class="string">"my-trident-topology"</span></div><div class="line"></div><div class="line"><span class="attr">config:</span></div><div class="line">  topology.workers: <span class="number">1</span></div><div class="line"></div><div class="line"><span class="attr">topologySource:</span></div><div class="line"><span class="attr">  className:</span> <span class="string">"org.apache.storm.flux.test.TridentTopologySource"</span></div><div class="line">  <span class="comment"># Flux 默认将会调用 "getTopology" 方法，下列方法名会覆盖它。</span></div><div class="line"><span class="attr">  methodName:</span> <span class="string">"getTopologyWithDifferentMethodName"</span></div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Storm/" rel="tag">#Storm</a>
+          
+            <a href="/tags/Flux/" rel="tag">#Flux</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/02/storm-sql/" rel="next" title="Storm SQL 集成">
+                <i class="fa fa-chevron-left"></i> Storm SQL 集成
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatars.gif"
+               alt="hk Lei" />
+          <p class="site-author-name" itemprop="name">hk Lei</p>
+          <p class="site-description motion-element" itemprop="description">hk Lei's Blog</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">3</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本原理"><span class="nav-number">2.</span> <span class="nav-text">基本原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">3.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能"><span class="nav-number">4.</span> <span class="nav-text">功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">5.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#从源码构建"><span class="nav-number">5.1.</span> <span class="nav-text">从源码构建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#构建中运行单元测试"><span class="nav-number">5.1.1.</span> <span class="nav-text">构建中运行单元测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#构建中不运行单元测试"><span class="nav-number">5.1.2.</span> <span class="nav-text">构建中不运行单元测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#构建中运行集成测试"><span class="nav-number">5.1.3.</span> <span class="nav-text">构建中运行集成测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Maven-打包"><span class="nav-number">5.2.</span> <span class="nav-text">Maven 打包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Flux-Maven-Dependency"><span class="nav-number">5.2.1.</span> <span class="nav-text">Flux Maven Dependency</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建一个启用-Flux-的-Topology-JAR"><span class="nav-number">5.2.2.</span> <span class="nav-text">创建一个启用 Flux 的 Topology JAR</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署运行-Flux-Topology"><span class="nav-number">5.3.</span> <span class="nav-text">部署运行 Flux Topology</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令行选项"><span class="nav-number">5.4.</span> <span class="nav-text">命令行选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单的输出"><span class="nav-number">5.5.</span> <span class="nav-text">简单的输出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YAML-配置项"><span class="nav-number">6.</span> <span class="nav-text">YAML 配置项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#替换-过滤属性"><span class="nav-number">7.</span> <span class="nav-text">替换/过滤属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#替换-过滤环境变量"><span class="nav-number">7.1.</span> <span class="nav-text">替换/过滤环境变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件"><span class="nav-number">8.</span> <span class="nav-text">组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构造参数、引用、属性和配置方法"><span class="nav-number">8.1.</span> <span class="nav-text">构造参数、引用、属性和配置方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#构造参数"><span class="nav-number">8.1.1.</span> <span class="nav-text">构造参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#引用"><span class="nav-number">8.1.2.</span> <span class="nav-text">引用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#属性"><span class="nav-number">8.1.3.</span> <span class="nav-text">属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置方法"><span class="nav-number">8.1.4.</span> <span class="nav-text">配置方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在构造参数、引用、属性和配置方法中使用-Java-枚举-enum"><span class="nav-number">8.2.</span> <span class="nav-text">在构造参数、引用、属性和配置方法中使用 Java 枚举 (enum)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-Topology"><span class="nav-number">9.</span> <span class="nav-text">配置 Topology</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#已存在的-Topologies"><span class="nav-number">10.</span> <span class="nav-text">已存在的 Topologies</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YAML-DSL"><span class="nav-number">11.</span> <span class="nav-text">YAML DSL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spouts-和-Bolts"><span class="nav-number">11.1.</span> <span class="nav-text">Spouts 和 Bolts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流和分组"><span class="nav-number">11.2.</span> <span class="nav-text">流和分组</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义流分组"><span class="nav-number">11.2.1.</span> <span class="nav-text">自定义流分组</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Includes-和-Overrides"><span class="nav-number">11.3.</span> <span class="nav-text">Includes 和 Overrides</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Word-Count-示例"><span class="nav-number">11.4.</span> <span class="nav-text">Word Count 示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微批处理-Trident-API"><span class="nav-number">12.</span> <span class="nav-text">微批处理 (Trident) API</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hk Lei</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
