@@ -1,0 +1,659 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Kafka,BigData,消息队列,生产者," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="苦行僧" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/hk-Lei.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="1 简介kafka在 0.8.2.0 版本的时候将客户端的 jar 包分离了出来，重构了生产者的 API(Consumer client redesign 预计到 0.9 版本完成)，官方解释如下：
+
+As of the 0.8.2 release we encourage all new development to use the new Java producer. This client">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kafka 之 The New Producer">
+<meta property="og:url" content="http://hk-lei.github.io/2015/04/07/Kafka-之-The-New-Producer/index.html">
+<meta property="og:site_name" content="苦行僧">
+<meta property="og:description" content="1 简介kafka在 0.8.2.0 版本的时候将客户端的 jar 包分离了出来，重构了生产者的 API(Consumer client redesign 预计到 0.9 版本完成)，官方解释如下：
+
+As of the 0.8.2 release we encourage all new development to use the new Java producer. This client">
+<meta property="og:updated_time" content="2016-08-03T13:04:52.827Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kafka 之 The New Producer">
+<meta name="twitter:description" content="1 简介kafka在 0.8.2.0 版本的时候将客户端的 jar 包分离了出来，重构了生产者的 API(Consumer client redesign 预计到 0.9 版本完成)，官方解释如下：
+
+As of the 0.8.2 release we encourage all new development to use the new Java producer. This client">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://hk-lei.github.io/2015/04/07/Kafka-之-The-New-Producer/"/>
+
+  <title> Kafka 之 The New Producer | 苦行僧 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">苦行僧</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Kafka 之 The New Producer
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-04-07T15:14:39+08:00" content="2015-04-07">
+              2015-04-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Kafka/" itemprop="url" rel="index">
+                    <span itemprop="name">Kafka</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h3><p>kafka在 0.8.2.0 版本的时候将客户端的 jar 包分离了出来，重构了生产者的 API(Consumer client redesign 预计到 0.9 版本完成)，官方解释如下：</p>
+<ul>
+<li>As of the 0.8.2 release we encourage all new development to use the new Java producer. This client is production tested and generally both faster and more fully featured than the previous Scala client.</li>
+</ul>
+<p>maven 源如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.kafka<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>kafka-clients<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.8.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>API参见<a href="http://kafka.apache.org/082/javadoc/index.html?org/apache/kafka/clients/producer/KafkaProducer.html" target="_blank" rel="external">javadocs</a><br><a id="more"></a></p>
+<h3 id="2-Producer-配置"><a href="#2-Producer-配置" class="headerlink" title="2 Producer 配置"></a>2 Producer 配置</h3><p>该 jar 包中提供的 KafkaProducer 可在创建其实例的时候在构造方法中指定配置集合：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">KafkaProducer</span><span class="params">(Properties properties)</span></span></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="title">KafkaProducer</span><span class="params">(Map&lt;String, Object&gt; configs)</span></div></pre></td></tr></table></figure></p>
+<p>也可将消息中的key、value的序列化机制在其构造方法中指定：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">KafkaProducer</span><span class="params">(Map&lt;String, Object&gt; configs, Serializer&lt;K&gt; keySerializer, Serializer&lt;V&gt; valueSerializer)</span></span></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="title">KafkaProducer</span><span class="params">(Properties properties, Serializer&lt;K&gt; keySerializer, Serializer&lt;V&gt; valueSerializer)</span></div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="title">KafkaProducer</span><span class="params">(ProducerConfig config, Serializer&lt;K&gt; keySerializer, Serializer&lt;V&gt; valueSerializer)</span></div></pre></td></tr></table></figure></p>
+<p>配置项在该 jar 包中变化较大，常用项的几个变化为：</p>
+<ul>
+<li>metadata.broker.list 变为 bootstrap.servers</li>
+<li>serializer.class 分为了 key.serializer 和 value.serializer</li>
+<li>没有了 partitioner.class 配置</li>
+<li>request.required.acks 变为了 acks 其值由之前的 0/1/-1 变为了 0/1/all</li>
+</ul>
+<p>配置项简介：<br><code>bootstrap.servers</code>: Kafka 的集群 broker servers 地址列表（IP:port，逗号分隔）<br><code>key.serializer</code>: 消息键的序列化类名<br><code>value.serializer</code>: 消息值的序列化类名<br><code>acks</code>: 表示生产者发送一条消息后的等待机制：<br>(1) <code>0</code>表示不等待，生产者不等待任何 server 的反馈，这种情况下<code>retries</code>配置项不生效，生产者也不知道消息是否成功<br>(2) <code>1</code>表示 leader 不等待 follower 复制成功反馈，将消息成功写到自己的本地日志后立即反馈给生产者，这种情况下如果 leader 刚反馈结束立即崩溃，没有一个 follower 复制成功，则该条记录丢失<br>(3) <code>all</code> 表示 leader 等待所有 follower 复制成功后才反馈给生产者，这种情况下可以保证在服务器不出现问题的情况下所有消息都不丢失，但是效率也是最差的。</p>
+<p>其他的配置项详见：<code>org.apache.kafka.clients.producer.ProducerConfig</code></p>
+<h3 id="3-消息-ProducerRecord"><a href="#3-消息-ProducerRecord" class="headerlink" title="3 消息 ProducerRecord"></a>3 消息 ProducerRecord</h3><p>创建消息<br>KafkaProducer 发送的消息被抽象为 <code>record</code> ：<code>ProducerRecord&lt;K, V&gt;</code><br>创建 <code>record</code> 的构造方法有以下三种：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">ProducerRecord</span><span class="params">(String topic, V value)</span></span></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="title">ProducerRecord</span><span class="params">(String topic, K key, V value)</span></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="title">ProducerRecord</span><span class="params">(String topic, Integer partition, K key, V value)</span></div></pre></td></tr></table></figure></p>
+<p>在<code>record</code>中可以指定目标分区；如果不被指定，那么默认使用的是基于 key 的 hash 值得默认分区；如果不指定分区也无 key ，则使用的是循环使用可用分区生产。<br>发送消息<br>发送一个<code>record</code> KafkaProducer 提供了两个方式<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> Future&lt;RecordMetadata&gt; <span class="title">send</span><span class="params">(ProducerRecord&lt;K,V&gt; record)</span></span></div><div class="line"></div><div class="line"><span class="keyword">public</span> Future&lt;RecordMetadata&gt; <span class="title">send</span><span class="params">(ProducerRecord&lt;K,V&gt; record, Callback callback)</span></div></pre></td></tr></table></figure></p>
+<p>第一种异步方式 send record 等同于 send(record, null);<br>第二种异步方式 send record，同时可以传递一个回调函数，使其在返回 metadata 或抛出异常的时候执行回调 <code>callback</code> ，示例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">ProducerRecord&lt;String, String&gt; record = <span class="keyword">new</span> ProducerRecord&lt;&gt;(topic, <span class="string">"key"</span>, <span class="string">"value"</span>);</div><div class="line">producer.send(record, (RecordMetadata metadata, Exception e) -&gt; &#123;</div><div class="line">    <span class="keyword">if</span> (e != <span class="keyword">null</span>)</div><div class="line">        e.printStackTrace();</div><div class="line">    System.out.println(<span class="string">"The msg is:"</span> + msg + <span class="string">", It's partition is: "</span> </div><div class="line">                        + metadata.partition() + <span class="string">", It's offset is "</span> + metadata.offset());</div><div class="line">    &#125;</div><div class="line">);</div></pre></td></tr></table></figure></p>
+<p>send 方法返回的是<code>Future&lt;RecordMetadata&gt;</code>对象，可以根据其<code>get</code>方法获取 record 的 <code>RecordMetadata</code> 对象，其包含了 <code>partition</code> 及 <code>offset</code> 信息，示例:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ProducerRecord&lt;String, String&gt; record = <span class="keyword">new</span> ProducerRecord&lt;&gt;(topic, <span class="string">"key"</span>, <span class="string">"value"</span>);</div><div class="line">RecordMetadata recordMetadata = producer.send(record).get();</div><div class="line">System.out.println(<span class="string">"record : "</span> + msg + <span class="string">" - partition : "</span> + </div><div class="line">                    recordMetadata.partition() + <span class="string">" - offset :"</span> + recordMetadata.offset());</div></pre></td></tr></table></figure></p>
+<h3 id="4-KafkaProducer-完整示例"><a href="#4-KafkaProducer-完整示例" class="headerlink" title="4 KafkaProducer 完整示例"></a>4 KafkaProducer 完整示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.xingxing.kafka;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.apache.kafka.clients.producer.KafkaProducer;</div><div class="line"><span class="keyword">import</span> org.apache.kafka.clients.producer.ProducerRecord;</div><div class="line"><span class="keyword">import</span> org.apache.kafka.clients.producer.RecordMetadata;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.util.Properties;</div><div class="line"><span class="keyword">import</span> java.util.concurrent.ExecutionException;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleProducer</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> KafkaProducer&lt;String, String&gt; producer;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SimpleProducer</span><span class="params">()</span> </span>&#123;</div><div class="line">        Properties props = <span class="keyword">new</span> Properties();</div><div class="line">        props.put(<span class="string">"bootstrap.servers"</span>, <span class="string">"x.x.x.x:9092, x.x.x.x:9092, x.x.x.x:9092"</span>);</div><div class="line">        props.put(<span class="string">"key.serializer"</span>, <span class="string">"org.apache.kafka.common.serialization.StringSerializer"</span>);</div><div class="line">        props.put(<span class="string">"value.serializer"</span>, <span class="string">"org.apache.kafka.common.serialization.StringSerializer"</span>);</div><div class="line">        props.put(<span class="string">"acks"</span>, <span class="string">"1"</span>); <span class="comment">//0 1 all</span></div><div class="line">        producer = <span class="keyword">new</span> KafkaProducer&lt;&gt;(props);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> ExecutionException, InterruptedException </span>&#123;</div><div class="line">        <span class="keyword">if</span> (args.length == <span class="number">0</span> || args.length ==<span class="number">1</span>) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Please provide topic name and Message count as arguments!"</span>);</div><div class="line">        &#125;</div><div class="line">        String topic = args[<span class="number">0</span>];</div><div class="line">        String count = args[<span class="number">1</span>];</div><div class="line">        <span class="keyword">int</span> messageCount = Integer.parseInt(count);</div><div class="line">        System.out.println(<span class="string">"Topic Name - "</span> + topic);</div><div class="line">        System.out.println(<span class="string">"Message Count - "</span> + messageCount);</div><div class="line">        SimpleProducer producer = <span class="keyword">new</span> SimpleProducer();</div><div class="line">        producer.sendMessage(topic, messageCount);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(String topic, <span class="keyword">int</span> messageCount)</span> </span></div><div class="line">                <span class="keyword">throws</span> ExecutionException, InterruptedException &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> mCount = <span class="number">0</span>; mCount &lt; messageCount; mCount ++) &#123;</div><div class="line">            Long runtime = System.currentTimeMillis();</div><div class="line">            String msg = <span class="string">"Message Publishing Time - "</span> + runtime;</div><div class="line">            ProducerRecord&lt;String, String&gt; record = <span class="keyword">new</span> ProducerRecord&lt;&gt;(topic, msg);</div><div class="line">            RecordMetadata recordMetadata = producer.send(record).get();</div><div class="line">            System.out.println(<span class="string">"record : "</span> + msg + <span class="string">" - partition : "</span> </div><div class="line">                    + recordMetadata.partition() + <span class="string">" - offset :"</span> + recordMetadata.offset());</div><div class="line">        &#125;</div><div class="line">        producer.close();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="5-MockProducer"><a href="#5-MockProducer" class="headerlink" title="5 MockProducer"></a>5 MockProducer</h3><p>客户端的jar中给出了一个测试接口 <code>MockProducer</code>，官方给出的解释：</p>
+<ul>
+<li>A mock of the producer interface you can use for testing code that uses Kafka.</li>
+<li>By default this mock will synchronously complete each send call successfully. However it can be configured to allow the user to control the completion of the call and supply an optional error for the producer to throw.</li>
+</ul>
+<p>主要功能详见<code>org.apache.kafka.clients.producer.MockProducer</code>类源码。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Kafka/" rel="tag">#Kafka</a>
+          
+            <a href="/tags/BigData/" rel="tag">#BigData</a>
+          
+            <a href="/tags/消息队列/" rel="tag">#消息队列</a>
+          
+            <a href="/tags/生产者/" rel="tag">#生产者</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/04/05/Scala-之-正则表达式/" rel="next" title="Scala 之 正则表达式">
+                <i class="fa fa-chevron-left"></i> Scala 之 正则表达式
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/04/08/Kafka-之-Camus-Kafka-Hadoop-Consumer/" rel="prev" title="Kafka 之 Camus: Kafka Hadoop Consumer">
+                Kafka 之 Camus: Kafka Hadoop Consumer <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatars.gif"
+               alt="hk Lei" />
+          <p class="site-author-name" itemprop="name">hk Lei</p>
+          <p class="site-description motion-element" itemprop="description">hk Lei's Blog</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-简介"><span class="nav-number">1.</span> <span class="nav-text">1 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Producer-配置"><span class="nav-number">2.</span> <span class="nav-text">2 Producer 配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-消息-ProducerRecord"><span class="nav-number">3.</span> <span class="nav-text">3 消息 ProducerRecord</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-KafkaProducer-完整示例"><span class="nav-number">4.</span> <span class="nav-text">4 KafkaProducer 完整示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-MockProducer"><span class="nav-number">5.</span> <span class="nav-text">5 MockProducer</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hk Lei</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

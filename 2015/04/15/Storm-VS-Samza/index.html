@@ -1,0 +1,676 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Storm,Samza," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="苦行僧" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/hk-Lei.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="翻译自 Samza 官方文档，翻译水平有限，若有错误之处，还请指正，感激不尽。
+
+Storm 和 Samza 非常相似，他们都提供了许多一样的高级特性：分区的流模型、分布式的执行环境、提供流式编程的 API、数据容错、对 Kafka 的集成等等。
+Storm 和 Samza 针对相似的概念使用了不同的词语：Storm 中的 spouts 与 Samza 中的 stream consumers，b">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[译]Storm VS Samza">
+<meta property="og:url" content="http://hk-lei.github.io/2015/04/15/Storm-VS-Samza/index.html">
+<meta property="og:site_name" content="苦行僧">
+<meta property="og:description" content="翻译自 Samza 官方文档，翻译水平有限，若有错误之处，还请指正，感激不尽。
+
+Storm 和 Samza 非常相似，他们都提供了许多一样的高级特性：分区的流模型、分布式的执行环境、提供流式编程的 API、数据容错、对 Kafka 的集成等等。
+Storm 和 Samza 针对相似的概念使用了不同的词语：Storm 中的 spouts 与 Samza 中的 stream consumers，b">
+<meta property="og:updated_time" content="2016-08-03T13:04:52.827Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[译]Storm VS Samza">
+<meta name="twitter:description" content="翻译自 Samza 官方文档，翻译水平有限，若有错误之处，还请指正，感激不尽。
+
+Storm 和 Samza 非常相似，他们都提供了许多一样的高级特性：分区的流模型、分布式的执行环境、提供流式编程的 API、数据容错、对 Kafka 的集成等等。
+Storm 和 Samza 针对相似的概念使用了不同的词语：Storm 中的 spouts 与 Samza 中的 stream consumers，b">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://hk-lei.github.io/2015/04/15/Storm-VS-Samza/"/>
+
+  <title> [译]Storm VS Samza | 苦行僧 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">苦行僧</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                [译]Storm VS Samza
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-04-15T18:30:38+08:00" content="2015-04-15">
+              2015-04-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Samza/" itemprop="url" rel="index">
+                    <span itemprop="name">Samza</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>翻译自 <a href="http://samza.apache.org/learn/documentation/0.9/comparisons/storm.html" target="_blank" rel="external">Samza 官方文档</a>，翻译水平有限，若有错误之处，还请指正，感激不尽。</p>
+</blockquote>
+<p><a href="http://storm.apache.org/" target="_blank" rel="external">Storm</a> 和 Samza 非常相似，他们都提供了许多一样的高级特性：分区的流模型、分布式的执行环境、提供流式编程的 API、数据容错、对 Kafka 的集成等等。</p>
+<p>Storm 和 Samza 针对相似的概念使用了不同的词语：Storm 中的 spouts 与 Samza 中的 stream consumers，bolts 与 tasks；tuples 与 messages。Storm 也有一些与 Samza 中不同的东西。</p>
+<h3 id="排序与保障"><a href="#排序与保障" class="headerlink" title="排序与保障"></a>排序与保障</h3><p>Storm 允许你去选择你想要的数据保障级别：</p>
+<ul>
+<li><code>at-most-once</code>传输：这种机制在数据没有被正确处理或者机器进程出现故障时丢弃数据，这种机制没有复杂的逻辑处理，根据 spout 产生的数据依次处理</li>
+<li><code>at-least-once</code>传输：其通过所有 提交的 tuple 的一个内存记录追踪每一个输入的 Tuple （及其下游的输出 Tuple）有没有在配置的时间内被成功处理，任何没有在超时时间内完全处理的 tuple 都会被重新提交。这种实现了一个 bolt 可能会多次处理相同的 tuple，也导致了消息的处理是无序的。这种机制也需要用户在其代码上的配合( 提供ack 和 fail方法)，其必须保持记录的祖先(tuple tree)，以便确认其 tuple 的输入，深入了解可参考 <a href="http://storm.apache.org/documentation/Guaranteeing-message-processing.html" target="_blank" rel="external">Storm 官方文档</a>。</li>
+<li><code>exactly-once</code>语义：最后，Storm 通过 <a href="http://storm.apache.org/documentation/Trident-tutorial.html" target="_blank" rel="external">Trident</a> 的抽象实现了精确一次处理的语义。这种模式使用了同最少一次相同的容错机制。Tuples 被处理至少一次，但是 Storm 的 state 实现允许重复检测和忽略。（这种重复检测只适用于其 state 被 Storm 管理的情况，如果你的程序有副作用，例如发送消息到 Topology 之外的服务，他将不保证唯一一次的语义。）在这种模式下，Spout 将 输入流拆分成批次，其批次的处理按照严格的顺序执行</li>
+</ul>
+<a id="more"></a>
+<p>Samza 也提供了保障机制——目前只有 <code>at-least-once</code> 传输，但是正在计划 <code>exactly-once</code>传输的支持。在每个流的分区内，Samza 始终按照输入流的顺序处理消息，但是不保证跨不同流和分区的消息顺序，这种模式使得 Samza 不用去追踪消息的上级输入而提供至少一次传输。在 Samza 中，虽然没有使用至多一次传输（例如，失败时丢弃消息）的性能优势，但是消息传输总是有保障的，这就是为什么 Samza 没有提供这种模式的原因。</p>
+<p>此外，因为 Samza 在一个分区内处理的数据永远不会是无序的，所以其更适合去处理关键数据(keyed data)。举个例子：如果你有一个数据库的流式更新——此时，后一步更新操作也许会替换前一步更新操作——然后重新排序消息可能会导致最终的结果。对于在相同流分区中的对相同 key 的所有更新支持，Samza 能够保证一致的状态。</p>
+<h3 id="状态管理"><a href="#状态管理" class="headerlink" title="状态管理"></a>状态管理</h3><p>Storm 的 bolts 的 <code>lower-level API</code> 在流式处理中没有提供任何的状态管理。Bolt 可以保持一个 <code>in-memory state</code>（当 Bolt 死掉的时候会丢失），或者可以使用一个远程的数据库来存取状态。 然而，Topology 通常可以做到处理消息的速度远高于对远程数据库的调用速度，所以使得对于每一个消息的远程调用速度成为瓶颈。</p>
+<p>对于其 <code>higher-level Trident API</code>，Storm 提供了<a href="http://storm.apache.org/documentation/Trident-state.html" target="_blank" rel="external">自动状态管理</a> 。其在内存中保存状态，并定期检查将其持久化到远程数据库中（如：Cassandra），所以对远程数据库访问的代价分摊到了数个处理 Tuples。通过保持元数据维护 state，Trident 能够实现 <code>exactly-once</code> 的处理语义。例如：如果你正在计算 Events，这种机制保证了 <code>counters</code>是正确的，即使出现机器的宕机或者 Tuples 的重新发送。</p>
+<p>每个 Bolt 中 state 的大小较小的情况（也许少于 100K）下，Storm 缓存处理 state 的改变的方式可以工作的很好，这使得其使用于追踪计数器和指标的最大、最小及平均值及与之相似的情况。然而，如果你需要维持一个比较大的 state ，这种方式实际上会降低到每一个处理的 Tuple 都对数据库进行一次远程调用，从而增加其性能开销</p>
+<p>Samza 使用了一个<a href="http://samza.apache.org/learn/documentation/0.9/container/state-management.html" target="_blank" rel="external">完全不同的方式管理状态</a>，每个 Samza task 在其本地机器上都包含一个嵌入式的 key-value 存储，而不是使用远程数据库持久化的方式。因此存取速度是非常快的，即使state 的大小大于其可用内存。改变此 key-value 存储复制到集群中的其他机器上，可以实现即使有机器宕机，之上正在运行的任务的状态可以在另一台机器恢复。</p>
+<p>通过在同一台集群的存储和处理的协作，Samza 能够达到很高的吞吐量，即使维持比较大的 state 的时候。如果你想执行的不止是计数器状态操作的情况的话，这是必须的。例如：如果你想执行的是一个 window join 多个流的情况，或者一个流与一个数据库的表（通过更新日志传输到 Samza） join，或者几个相关的消息放入一个更大的消息，那么你需要保持这么多的状态，维持本地状态对 task 的执行更有效。</p>
+<p>Samza 的状态管理的局限性是其目前还不支持 <code>exactly-once</code> 语义——目前只支持 <code>at-least-once</code>，但是目前我们正在努力修复这个曲线，敬请关注更新。</p>
+<h3 id="分区和并行性"><a href="#分区和并行性" class="headerlink" title="分区和并行性"></a>分区和并行性</h3><p>Storm 的<a href="http://storm.apache.org/documentation/Understanding-the-parallelism-of-a-Storm-topology.html" target="_blank" rel="external">并行模式</a>和Samza的非常相似，两个框架都是将进程分割为独立的可并行执行的 tasks 中，资源是根据 tasks 的数量分配的：一个小的 Job 可以使所有的任务都运行在一个机器的一个进程中；一个大型的 job 可以将其任务分配到多个机器的多个进程中。</p>
+<p>最大的不同是 Storm 默认法使用一个线程执行一个任务，而 Samza 使用一个单线程的处理机制（即容器机制）。一个 Samza 的容器可能包含多个任务，但是只有一个线程轮询每个任务，这就意味着每个容器恰好映射一个 CPU 核心，使资源模型更加简单并减少了在同一台机器上运行的其他任务的干扰。在一个不可预测的资源模型下，Storm 的多线程机制可以更加充分的利用机器的空闲资源。</p>
+<p>Storm 支持动态均衡，也就是说给 Topology 添加更多线程或者进程不需要重启 Topology 或者 集群。这是一个方便的特性，尤其是在开发环境中。我们没有将其添加到 Samza 中：我们觉得这种更改需要通过一个正规的配置管理过程（如：版本控制、通知等），因为这会影响生产环境的性能。换句话说，jobs 的代码和配置应该完全代表其在集群之上运行的状态。</p>
+<p>当使用 Trident 中的事物 spout （一个实现唯一一次处理的需求）时，并行性可能会潜在的降低。Trident 依赖对其所有输入流的一个全局的排序——这就是说需要对一个流的所有分区进行排序，不止在一个分区内。这就意味着该 Topology 的输入流都要经过一个 Spout 的实例，实际上忽略了输入流的分区机制。这个 Spout 可能会是大批量数据流的一个瓶颈。在 Samza 中所有流的处理都是并行的，因此没有这个瓶颈。</p>
+<h3 id="部署和执行"><a href="#部署和执行" class="headerlink" title="部署和执行"></a>部署和执行</h3><p>Storm 集群的一部分节点运行着<code>Supervisor</code>守护进程。Supervisor 进程与一个运行 <code>Nimbus</code> 守护进程的 <code>Master</code> 节点进行通信。Nimbus 进程负责整个集群的工作分配和资源管理，详情可查看 <a href="http://storm.apache.org/documentation/Tutorial.html" target="_blank" rel="external">Strom’s Tutorial</a>。这与 YARN 非常相似，虽然 YARN 具备更多的功能、希望整合多框架，但 Nimbus 能够更好的与 Storm 集成。</p>
+<p>Yahoo! 已经发布了 <a href="https://github.com/yahoo/storm-yarn" target="_blank" rel="external">Storm-YARN</a>。根据 Yahoo! 的<a href="https://developer.yahoo.com/blogs/ydn/storm-yarn-released-open-source-143745133.html" target="_blank" rel="external">博客</a>描述，Storm-YARN 是对在 YARN 上可启动一个单独的 Storm 集群 （包含完整的 Nimbus 和 Supervisors）的一层包装。</p>
+<p>Storm 的 Nimbus 和 YARN 的 ResourceManager、Supervisor 和 NodeManager 存在着很多相同之处。与其写一个自己的资源管理框架，或者在 YARN 运行一个资源管理框架，我们决定 Samza 应该直接使用 YARN，并作为 YARN 生态系统中的一等公民。YARN 是稳定性好、利用率高、功能完备并可与 Hadoop 互操作的，同时他也提供了一些非常优秀的功能如：安全性（用户验证机制）、cgroup 级别的进程隔离等等。</p>
+<p>Samza 在 YARN 中是可插拔的，所以如果你想使用一个不同的框架你可以替换他。</p>
+<h3 id="语言支持"><a href="#语言支持" class="headerlink" title="语言支持"></a>语言支持</h3><p>Storm 是使用 Java 和 Clojure 开发的，但对非 JVM 语言提供了良好的支持，他遵循的模式和 MapReduce 的流模式非常相似： 非 JVM 语言的 task 运行在一个单独的进程中，数据发送到其标准输入，通过其标准输出读输出数据。</p>
+<p>Samza 是使用 Java 和 Scala 开发的。他致力于多语言的支持，但目前只支持 JVM 语言。</p>
+<h3 id="工作流"><a href="#工作流" class="headerlink" title="工作流"></a>工作流</h3><p>Storm 提供了在<a href="http://storm.apache.org/documentation/Tutorial.html" target="_blank" rel="external">代码</a>中建模 Topologies（多阶段的处理图）。Trident 在此之上提供了一个 <a href="http://storm.apache.org/documentation/Trident-API-Overview.html" target="_blank" rel="external">higher-level API</a>，包括关系处理如过滤、分组、聚合和连接等。这就意味着整个 Topology 是在一个地方被连接起来的，其优点是可以在代码中记录整个 Topology，但也有一个缺点：整个 Topology 的开发和部署是一个整体不可分离。</p>
+<p>在 Samza 中，每一个 job 是一个独立的实体，你可以在一个项目中定义多个 job，也可以在不同团队的不同项目中定义不同的 job。每个 job 的启动、停止都是独立的， job 直接的交互只通过 stream 的命名，你可以在系统中添加 jobs ，这不会影响任何其他正在运行的 jobs，这使得 Samza 可以很好的适用于 大型公司的工作流之中。</p>
+<p>Samza 的这种方式在 Storm 中可以使用一个代理(例如 Kafka)连接两个单独的 Topology 实现，但是 Storm 的 <code>exactly-once</code> 语义实现只能在单个 Topology 中有效。</p>
+<h3 id="成熟度"><a href="#成熟度" class="headerlink" title="成熟度"></a>成熟度</h3><p>我们不能说 Storm 是成熟的，但是他有<a href="http://storm.apache.org/documentation/Powered-By.html" target="_blank" rel="external">大批的用户</a>、强大的功能集并且在积极的发展着。他与目前大部分消息系统（如 RabbitMQ、Kestrel、Kafka 等）集成的很好。</p>
+<p>Samza 还处在发育期，但是其建立在强大的组成部件之上。YARN 相当年轻，但其在 Yahoo 已经跑在 3000+ 的集群之上，并且其项目在 <a href="http://hortonworks.com/" target="_blank" rel="external">Hortonworks</a> 和 <a href="http://www.cloudera.com/content/cloudera/en/home.html" target="_blank" rel="external">Cloudera</a> 的支持下积极的发展着。Kafka 有很强大的一面，并且有越来越多的<a href="https://cwiki.apache.org/confluence/display/KAFKA/Powered+By" target="_blank" rel="external">用户量</a>，其经常与 Storm 一起使用。Samza 是 LinkedIn 开源的一个新的标志性项目，我们希望其他人会发现其优点，被采用他。</p>
+<h3 id="缓存机制和延迟性"><a href="#缓存机制和延迟性" class="headerlink" title="缓存机制和延迟性"></a>缓存机制和延迟性</h3><p>Storm 使用 <a href="http://zeromq.org/" target="_blank" rel="external">ZeroMQ</a> (注：0.9 版本之后开始使用 <a href="http://netty.io/" target="_blank" rel="external">Netty</a>)实现 bolt 间的非持久通信，其能够保证 tuples 传输具有极低的延迟性。Samza 不具备这种等效机制，其始终将任务的输入写入到流中。</p>
+<p>另一方面，当 bolt 使用 ZeroMQ 发送消息时，消息消费者的消费速度不够快，生产者的 ZeroMQ 的缓存开始填充消息，当缓存量增大到一定程度后，Topology 的消息处理可能会超时，这会导致消息的重新发送、缓存数据量更大从而使问题更糟。为了阻止这种情况发送，你可以是设置同一时间 Topology 处理消息量的最大值，一旦达到这个阈值，Spout 会阻塞直到有消息已经处理成功。这种机制允许<code>back pressure</code>，但是需要小心设置<a href="http://nathanmarz.github.io/storm/doc/backtype/storm/Config.html#TOPOLOGY_MAX_SPOUT_PENDING" target="_blank" rel="external">topology.max.spout.pending</a>参数。如果一个 bolt 处理缓慢，他会拖垮整个 Topology。</p>
+<p>bolts 这件缺乏代理也会使得给处理容错和消息语义增加复杂性。Storm 有一个 <a href="http://storm.apache.org/documentation/Guaranteeing-message-processing.html" target="_blank" rel="external">非常聪明机制</a> 检测失败的 Tuples。因为每个输入输出流都是有容错和副本机制的，所以 Samza 不需要这样的机制。</p>
+<p>Samza 对于缓存使用不同的方式，我们将 StreamTask 间的每一个 hop 缓存到磁盘上。关于这个决定及其取舍的详细可参见 <a href="http://samza.apache.org/learn/documentation/0.9/comparisons/introduction.html" target="_blank" rel="external">Comparison Introduction</a>。这个设计方案使其更容易保证数据持久化，并且在一个 job 的处理存在高延迟的情况有可以缓存大量消息的优势。但是，这也带来了较高的延迟。</p>
+<p>如上面的工作流中的描述，Samza 可以模仿 Storm，但会带来一些功能的丧失。</p>
+<h3 id="隔离性"><a href="#隔离性" class="headerlink" title="隔离性"></a>隔离性</h3><p>Storm 支持标准的 UNIX 进程级别的管理，如果存在过高的 CPU、磁盘、网络或者内存的使用，你的 Topology 可能会影响另一个 Topology 的性能（反之亦然）。</p>
+<p>Samza 使用 YARN 提供的资源基本的隔离，目前，YARN 支持 CPU 和 内存限制（通过 <a href="http://samza.apache.org/learn/documentation/0.9/yarn/isolation.html" target="_blank" rel="external">cgroups</a>）的显示控制，并且都已经成功的运用于 Samza。目前 Yarn 不支持对磁盘和网络的隔离。</p>
+<h3 id="DRPC"><a href="#DRPC" class="headerlink" title="DRPC"></a>DRPC</h3><p>在 Storm 中，你可以写的 Topologies 不止可以接受固定的输入事件流，也可以根据需求允许客户端执行分布式计算，该请求在一个特殊的 Spout 中做为一个 Tuple 被发送到 Topology 中，在 Topology 的计算结果被返回到客户端（同步等待结果），这种机制被称为<a href="http://storm.apache.org/documentation/Distributed-RPC.html" target="_blank" rel="external">分布式 RPC</a>（DRPC）。</p>
+<p>Samza 目前不具备 DRPC 的 API，但你可以使用 Samza 流处理原语建立它。</p>
+<h3 id="数据模型"><a href="#数据模型" class="headerlink" title="数据模型"></a>数据模型</h3><p>Storm 将所有消息使用其定义的Tuple数据模型和可插拔的序列化机制</p>
+<p>Samza 的数据模型和序列化机制都是可插拔的，这里我们不固执己见说哪一种更好。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Storm/" rel="tag">#Storm</a>
+          
+            <a href="/tags/Samza/" rel="tag">#Samza</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/04/08/Kafka-之-Camus-Kafka-Hadoop-Consumer/" rel="next" title="Kafka 之 Camus: Kafka Hadoop Consumer">
+                <i class="fa fa-chevron-left"></i> Kafka 之 Camus: Kafka Hadoop Consumer
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/04/21/HBase-集群备份/" rel="prev" title="HBase 集群备份">
+                HBase 集群备份 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatars.gif"
+               alt="hk Lei" />
+          <p class="site-author-name" itemprop="name">hk Lei</p>
+          <p class="site-description motion-element" itemprop="description">hk Lei's Blog</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#排序与保障"><span class="nav-number">1.</span> <span class="nav-text">排序与保障</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态管理"><span class="nav-number">2.</span> <span class="nav-text">状态管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分区和并行性"><span class="nav-number">3.</span> <span class="nav-text">分区和并行性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署和执行"><span class="nav-number">4.</span> <span class="nav-text">部署和执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#语言支持"><span class="nav-number">5.</span> <span class="nav-text">语言支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工作流"><span class="nav-number">6.</span> <span class="nav-text">工作流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#成熟度"><span class="nav-number">7.</span> <span class="nav-text">成熟度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存机制和延迟性"><span class="nav-number">8.</span> <span class="nav-text">缓存机制和延迟性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#隔离性"><span class="nav-number">9.</span> <span class="nav-text">隔离性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DRPC"><span class="nav-number">10.</span> <span class="nav-text">DRPC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据模型"><span class="nav-number">11.</span> <span class="nav-text">数据模型</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hk Lei</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

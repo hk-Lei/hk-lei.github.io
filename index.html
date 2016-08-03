@@ -530,8 +530,8 @@
             
               
                 
-                <a class="post-title-link" href="/2016/06/01/hello-world/" itemprop="url">
-                  Hello World
+                <a class="post-title-link" href="/2015/04/21/HBase-集群备份/" itemprop="url">
+                  HBase 集群备份
                 </a>
               
             
@@ -544,11 +544,861 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-06-01T21:23:00+08:00" content="2016-06-01">
-              2016-06-01
+            <time itemprop="dateCreated" datetime="2015-04-21T15:13:00+08:00" content="2015-04-21">
+              2015-04-21
             </time>
           </span>
 
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/HBase/" itemprop="url" rel="index">
+                    <span itemprop="name">HBase</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p><strong>注意：HBase 版本为 0.98.1</strong></p>
+<h3 id="Replication"><a href="#Replication" class="headerlink" title="Replication"></a>Replication</h3><p>1 在 destination cluster 创建与 source cluster 中同名的 table 和 column families<br>2 确保 source cluster 和 destination cluster 可互通<br>3 在 source cluster 的 hbase-site.xml 中添加<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.replication<span class="tag">&lt;/<span class="name">name</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>4 在 source cluster 的 <code>hbase shell</code> 中使用 <code>add_peer</code> 添加 destination cluster:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hbase&gt; add_peer &apos;ID&apos; &apos;CLUSTER_KEY&apos;</div></pre></td></tr></table></figure></p>
+<p><code>ID</code> 的条件: 必须为字符串，必须不包含连字符<br><code>CLUSTER_KEY</code> 的组成：<code>hbase.zookeeper.quorum:hbase.zookeeper.property.clientPort:zookeeper.znode.parent</code><br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/04/21/HBase-集群备份/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/04/15/Storm-VS-Samza/" itemprop="url">
+                  [译]Storm VS Samza
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-04-15T18:30:38+08:00" content="2015-04-15">
+              2015-04-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Samza/" itemprop="url" rel="index">
+                    <span itemprop="name">Samza</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <blockquote>
+<p>翻译自 <a href="http://samza.apache.org/learn/documentation/0.9/comparisons/storm.html">Samza 官方文档</a>，翻译水平有限，若有错误之处，还请指正，感激不尽。</p>
+</blockquote>
+<p><a href="http://storm.apache.org/">Storm</a> 和 Samza 非常相似，他们都提供了许多一样的高级特性：分区的流模型、分布式的执行环境、提供流式编程的 API、数据容错、对 Kafka 的集成等等。</p>
+<p>Storm 和 Samza 针对相似的概念使用了不同的词语：Storm 中的 spouts 与 Samza 中的 stream consumers，bolts 与 tasks；tuples 与 messages。Storm 也有一些与 Samza 中不同的东西。</p>
+<h3 id="排序与保障"><a href="#排序与保障" class="headerlink" title="排序与保障"></a>排序与保障</h3><p>Storm 允许你去选择你想要的数据保障级别：</p>
+<ul>
+<li><code>at-most-once</code>传输：这种机制在数据没有被正确处理或者机器进程出现故障时丢弃数据，这种机制没有复杂的逻辑处理，根据 spout 产生的数据依次处理</li>
+<li><code>at-least-once</code>传输：其通过所有 提交的 tuple 的一个内存记录追踪每一个输入的 Tuple （及其下游的输出 Tuple）有没有在配置的时间内被成功处理，任何没有在超时时间内完全处理的 tuple 都会被重新提交。这种实现了一个 bolt 可能会多次处理相同的 tuple，也导致了消息的处理是无序的。这种机制也需要用户在其代码上的配合( 提供ack 和 fail方法)，其必须保持记录的祖先(tuple tree)，以便确认其 tuple 的输入，深入了解可参考 <a href="http://storm.apache.org/documentation/Guaranteeing-message-processing.html">Storm 官方文档</a>。</li>
+<li><code>exactly-once</code>语义：最后，Storm 通过 <a href="http://storm.apache.org/documentation/Trident-tutorial.html">Trident</a> 的抽象实现了精确一次处理的语义。这种模式使用了同最少一次相同的容错机制。Tuples 被处理至少一次，但是 Storm 的 state 实现允许重复检测和忽略。（这种重复检测只适用于其 state 被 Storm 管理的情况，如果你的程序有副作用，例如发送消息到 Topology 之外的服务，他将不保证唯一一次的语义。）在这种模式下，Spout 将 输入流拆分成批次，其批次的处理按照严格的顺序执行</li>
+</ul>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/04/15/Storm-VS-Samza/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/04/08/Kafka-之-Camus-Kafka-Hadoop-Consumer/" itemprop="url">
+                  Kafka 之 Camus: Kafka Hadoop Consumer
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-04-08T14:26:27+08:00" content="2015-04-08">
+              2015-04-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Kafka/" itemprop="url" rel="index">
+                    <span itemprop="name">Kafka</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h3><p>Camus 是一个 LinkedIn 开源的消费 Kafka 数据到 HDFS 的项目，其使用 MapReduce 实现此功能，源码托管在 <a href="https://github.com/linkedin/camus">Github</a>之上，官方给出的架构图如下图所示。 </p>
+<p><center><img src="/images/camus.jpg" alt="图1 Camus 官方架构图"></center><br>其实现的功能如下：</p>
+<ul>
+<li>管理自己消费的 Offset ，存储在 HDFS 之上</li>
+<li>数据存储可根据时间分区
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/04/08/Kafka-之-Camus-Kafka-Hadoop-Consumer/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/04/07/Kafka-之-The-New-Producer/" itemprop="url">
+                  Kafka 之 The New Producer
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-04-07T15:14:39+08:00" content="2015-04-07">
+              2015-04-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Kafka/" itemprop="url" rel="index">
+                    <span itemprop="name">Kafka</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h3><p>kafka在 0.8.2.0 版本的时候将客户端的 jar 包分离了出来，重构了生产者的 API(Consumer client redesign 预计到 0.9 版本完成)，官方解释如下：</p>
+<ul>
+<li>As of the 0.8.2 release we encourage all new development to use the new Java producer. This client is production tested and generally both faster and more fully featured than the previous Scala client.</li>
+</ul>
+<p>maven 源如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.kafka<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>kafka-clients<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.8.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>API参见<a href="http://kafka.apache.org/082/javadoc/index.html?org/apache/kafka/clients/producer/KafkaProducer.html">javadocs</a><br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/04/07/Kafka-之-The-New-Producer/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/04/05/Scala-之-正则表达式/" itemprop="url">
+                  Scala 之 正则表达式
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-04-05T15:10:32+08:00" content="2015-04-05">
+              2015-04-05
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Scala/" itemprop="url" rel="index">
+                    <span itemprop="name">Scala</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="1-Scala-中正则表达式的基本使用"><a href="#1-Scala-中正则表达式的基本使用" class="headerlink" title="1 Scala 中正则表达式的基本使用"></a>1 Scala 中正则表达式的基本使用</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">scala&gt; <span class="keyword">val</span> pattern = <span class="string">"(S|s)cala"</span>.r</div><div class="line">pattern: scala.util.matching.<span class="type">Regex</span> = (<span class="type">S</span>|s)cala</div><div class="line"></div><div class="line">scala&gt; <span class="keyword">val</span> str = <span class="string">"Scala is scalable and cool"</span></div><div class="line">str: <span class="type">String</span> = <span class="type">Scala</span> is scalable and cool</div><div class="line"></div><div class="line">scala&gt; println(pattern findFirstIn str)</div><div class="line"><span class="type">Some</span>(<span class="type">Scala</span>)</div><div class="line"></div><div class="line">scala&gt; println((pattern findAllIn str).mkString(<span class="string">", "</span>))</div><div class="line"><span class="type">Scala</span>, scala</div></pre></td></tr></table></figure>
+<p>Scala 隐式的将 <code>String</code> 类型的字符串转换成了 <code>RichString</code> 类型，然后调用其 <code>r()</code> 方法返回一个 <code>Regex</code> 实例。如果正则中使用到了转义字符，最好使用原始字符串 如 “\d2:\d2:\d4” 最好使用 “””\d2:\d2:\d4”””<br>查找使用 findFirstIn、findAllIn 等，替换使用 replaceFirstIn、replaceAllIn等。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/04/05/Scala-之-正则表达式/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/04/05/Scala-之-模式匹配/" itemprop="url">
+                  Scala 之 模式匹配
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-04-05T14:43:51+08:00" content="2015-04-05">
+              2015-04-05
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Scala/" itemprop="url" rel="index">
+                    <span itemprop="name">Scala</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="1-case-里的模式变量和常量"><a href="#1-case-里的模式变量和常量" class="headerlink" title="1 case 里的模式变量和常量:"></a>1 case 里的模式变量和常量:</h3><p>模式变量要以小写开头，模式常量要以大写开头<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">scala&gt; <span class="class"><span class="keyword">class</span> <span class="title">Sample</span> </span>&#123;</div><div class="line">    |   <span class="keyword">val</span> max = <span class="number">100</span></div><div class="line">    |   <span class="keyword">val</span> <span class="type">MIN</span> = <span class="number">0</span></div><div class="line">    |</div><div class="line">    |   <span class="function"><span class="keyword">def</span> <span class="title">process</span> </span>(input: <span class="type">Int</span>) &#123;</div><div class="line">    |   input <span class="keyword">match</span> &#123;</div><div class="line">    |     <span class="keyword">case</span> max =&gt; println (<span class="string">"Don't try this at home"</span>)</div><div class="line">    |     <span class="keyword">case</span> <span class="type">MIN</span> =&gt; println (<span class="string">"You matched min"</span>)</div><div class="line">    |     <span class="keyword">case</span> _ =&gt; println (<span class="string">"Unreachable !!"</span>)</div><div class="line">    |     &#125;</div><div class="line">    |   &#125;</div><div class="line">    | &#125;</div><div class="line">&lt;console&gt;:<span class="number">13</span>: warning: patterns after a variable pattern cannot <span class="keyword">match</span> (<span class="type">SLS</span> <span class="number">8.1</span><span class="number">.1</span>)</div><div class="line"><span class="type">If</span> you intended to <span class="keyword">match</span> against value max in <span class="class"><span class="keyword">class</span> <span class="title">Sample</span>, <span class="title">you</span> <span class="title">must</span> <span class="title">use</span> <span class="title">backticks</span>, <span class="title">like</span></span>: <span class="keyword">case</span> `max` =&gt;</div><div class="line">          <span class="keyword">case</span> max =&gt; println (<span class="string">"Don't try this at home"</span>)</div><div class="line">               ^</div><div class="line">&lt;console&gt;:<span class="number">14</span>: warning: unreachable code due to variable pattern <span class="symbol">'ma</span>x' on line <span class="number">13</span></div><div class="line">          <span class="keyword">case</span> <span class="type">MIN</span> =&gt; println (<span class="string">"You matched min"</span>)</div><div class="line">                              ^</div><div class="line">&lt;console&gt;:<span class="number">15</span>: warning: unreachable code due to variable pattern <span class="symbol">'ma</span>x' on line <span class="number">13</span></div><div class="line">          <span class="keyword">case</span> _ =&gt; println (<span class="string">"Unreachable !!"</span>)</div><div class="line">                            ^</div><div class="line">defined <span class="class"><span class="keyword">class</span> <span class="title">Sample</span></span></div></pre></td></tr></table></figure></p>
+<p>上面的代码中，case 认为 <code>max</code> 是自己的语句内的局部变量，即使 Sample 中有一个同名的变量。使用 Sample 定义的 <code>max</code> 可显示的指定作用域：<code>this.max</code><br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/04/05/Scala-之-模式匹配/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/04/04/Scala-之-for-循环/" itemprop="url">
+                  Scala 之 for 循环
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-04-04T13:27:45+08:00" content="2015-04-04">
+              2015-04-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Scala/" itemprop="url" rel="index">
+                    <span itemprop="name">Scala</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="通用语法表达式"><a href="#通用语法表达式" class="headerlink" title="通用语法表达式"></a>通用语法表达式</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span>([pattern &lt;- generator; definition*]+; filter*)</div><div class="line">    [<span class="keyword">yield</span>] expression</div></pre></td></tr></table></figure>
+<p><code>for</code> 表达式接受的参数包括一个或多个生成器， 0或多个定义， 还有 0 或多个过滤器（<code>filter</code>）。<code>yield</code>关键字是可选的，存在表示表达式返回一组值而不是一个<code>Unit</code>。例如：<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">scala&gt; <span class="keyword">val</span> result = <span class="keyword">for</span> (i &lt;- <span class="number">1</span> to <span class="number">3</span>) <span class="keyword">yield</span> i * <span class="number">2</span></div><div class="line">result: scala.collection.immutable.<span class="type">IndexedSeq</span>[<span class="type">Int</span>] = <span class="type">Vector</span>(<span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>)</div></pre></td></tr></table></figure></p>
+<p>幕后，Scala 会把<code>for</code> 表达式翻译成另外的一个表达式，其根据表达式的复杂度组合使用 <code>map()</code> 和 <code>filter()</code><br>上述表达式的<code>map</code>实现:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">scala&gt; <span class="keyword">val</span> result2 = (<span class="number">1</span> to <span class="number">3</span>) map (_ * <span class="number">2</span>)</div><div class="line">result2: scala.collection.immutable.<span class="type">IndexedSeq</span>[<span class="type">Int</span>] = <span class="type">Vector</span>(<span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>)</div></pre></td></tr></table></figure></p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/04/04/Scala-之-for-循环/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/04/02/CentOS-源码编译安装-Git/" itemprop="url">
+                  CentOS 源码编译安装 Git
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-04-02T18:09:22+08:00" content="2015-04-02">
+              2015-04-02
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Git/" itemprop="url" rel="index">
+                    <span itemprop="name">Git</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
           
 
           
@@ -574,15 +1424,8 @@
       
         
           
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+            <h3 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo yum install zlib expat libcurl gettext asciidoc</div></pre></td></tr></table></figure>
+<h3 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">$ unzip git-2.3.5.zip</div><div class="line">$ <span class="built_in">cd</span> git-2.3.5</div><div class="line"></div><div class="line">$ make configure</div><div class="line"></div><div class="line">$ ./configure --prefix=/usr</div><div class="line"></div><div class="line">$ make all doc info -j 16</div><div class="line"></div><div class="line">$ sudo make install install-doc install-html</div><div class="line"></div><div class="line">$ <span class="built_in">cd</span></div><div class="line">$ git version</div><div class="line">git version 2.3.5</div><div class="line"></div><div class="line"><span class="comment">#安装完成后删除源码及编译生成的文件</span></div><div class="line">$ sudo rm -rf /path/to/git-2.3.5*</div></pre></td></tr></table></figure>
 
           
         
@@ -614,6 +1457,10 @@
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
 
 
           </div>
@@ -652,7 +1499,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">3</span>
+              <span class="site-state-item-count">11</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -660,7 +1507,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -669,7 +1516,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
